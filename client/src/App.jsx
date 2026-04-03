@@ -7,15 +7,19 @@ import Transactions from "./pages/Transactions";
 import Accounts from "./pages/Accounts";
 import Reports from "./pages/Reports";
 import Layout from "./components/Layout";
+import { Activity } from "lucide-react";
 
-// ✅ Protected Route
+// Protected Route
 const ProtectedRoute = ({ children }) => {
   const { token, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <h1>Loading...</h1>
+      <div className="min-h-[100dvh] flex items-center justify-center bg-[#0A0D14]">
+        <div className="flex flex-col items-center gap-4">
+          <Activity className="text-primary animate-pulse" size={32} />
+          <p className="text-sm text-gray-500 font-mono tracking-widest uppercase">Initializing Secure Context...</p>
+        </div>
       </div>
     );
   }
@@ -23,14 +27,16 @@ const ProtectedRoute = ({ children }) => {
   return token ? children : <Navigate to="/login" />;
 };
 
-// ✅ Public Route (FIXED)
+// Public Route
 const PublicRoute = ({ children }) => {
   const { token, loading } = useAuth();
 
   if (loading) {
     return (
-      <div style={{ color: "white", textAlign: "center", marginTop: "100px" }}>
-        Loading...
+      <div className="min-h-[100dvh] flex items-center justify-center bg-[#0A0D14]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+        </div>
       </div>
     );
   }

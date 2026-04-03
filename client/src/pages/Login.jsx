@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, TrendingUp, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, TrendingUp, Mail, Lock, ArrowRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
@@ -15,102 +15,120 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email || !form.password) {
-      toast.error("Please fill all fields");
+      toast.error("Please provide both email and password");
       return;
     }
     setLoading(true);
     try {
       const { data } = await API.post("/auth/login", form);
       login(data.user, data.token);
-      toast.success(`Welcome back, ${data.user.name}!`);
+      toast.success(`Welcome back, ${data.user.name}`);
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Authentication failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)" }}>
-      {/* Background dots */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div key={i} className="absolute rounded-full bg-primary opacity-5"
-            style={{ width: Math.random() * 100 + 20, height: Math.random() * 100 + 20, top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%` }}
-          />
-        ))}
-      </div>
+    <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-[#0A0D14] text-gray-100 relative overflow-hidden selection:bg-primary/30">
+      
+      {/* Abstract background elements */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[150px] pointer-events-none mix-blend-screen" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/5 blur-[120px] pointer-events-none mix-blend-screen" />
+      
+      {/* Grid overlay */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMCAwaDQwdjQwSDB6IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)] pointer-events-none" />
 
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-primary mx-auto flex items-center justify-center mb-4 shadow-lg shadow-primary/30">
-            <TrendingUp size={28} color="white" />
+      <div className="w-full max-w-[420px] relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
+        
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="w-14 h-14 rounded-xl bg-[#0D111A] border border-white/10 mx-auto flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(124,58,237,0.15)] relative group">
+            <div className="absolute inset-0 rounded-xl bg-primary/20 blur-md group-hover:bg-primary/30 transition-colors duration-500" />
+            <TrendingUp size={24} className="text-primary relative z-10" strokeWidth={2.5} />
           </div>
-          <h1 className="text-3xl font-bold text-white">WealthFlow AI</h1>
-          <p className="text-gray-400 mt-2">Your intelligent finance companion</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">WealthFlow Terminal</h1>
+          <p className="text-gray-400 text-[15px]">Institutional-grade personal finance</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold text-navy mb-2">Welcome back</h2>
-          <p className="text-gray-500 text-sm mb-6">Sign in to your account</p>
+        <div className="bg-[#0D111A]/80 backdrop-blur-xl rounded-2xl border border-white/5 p-8 shadow-2xl shadow-black/50">
+          <h2 className="text-xl font-medium text-white mb-6">Authenticate</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
-              <div className="relative">
-                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-[13px] font-medium text-gray-400 block">Email</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Mail size={16} className="text-gray-500 group-focus-within:text-primary transition-colors" />
+                </div>
                 <input
                   type="email"
-                  className="input-field pl-11"
-                  placeholder="you@example.com"
+                  required
+                  className="w-full bg-[#141923] border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                  placeholder="name@domain.com"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-              <div className="relative">
-                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <div className="space-y-1.5">
+              <label className="text-[13px] font-medium text-gray-400 block">Password</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Lock size={16} className="text-gray-500 group-focus-within:text-primary transition-colors" />
+                </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="input-field pl-11 pr-11"
+                  required
+                  className="w-full bg-[#141923] border border-white/10 rounded-lg py-2.5 pl-10 pr-11 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-mono tracking-wider"
                   placeholder="••••••••"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-gray-300 transition-colors focus:outline-none"
+                  tabIndex={-1}
+                >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
-            <button type="submit" className="btn-primary mt-2" disabled={loading}>
+            <button 
+              type="submit" 
+              className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg py-2.5 px-4 text-[14px] font-medium flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none mt-2 shadow-[0_0_20px_rgba(124,58,237,0.2)]" 
+              disabled={loading}
+            >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Signing in...
-                </span>
-              ) : "Sign In"}
+                <>
+                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <>
+                  <span>Access Terminal</span>
+                  <ArrowRight size={16} />
+                </>
+              )}
             </button>
           </form>
-
-          <p className="text-center text-sm text-gray-500 mt-6">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-primary font-semibold hover:underline">
-              Create one
+        </div>
+        
+        {/* Footer */}
+        <div className="mt-8 text-center">
+          <p className="text-[13px] text-gray-500">
+            No access credentials?{" "}
+            <Link to="/register" className="text-primary hover:text-primary-foreground font-medium transition-colors">
+              Request access
             </Link>
           </p>
         </div>
-
-        <p className="text-center text-gray-600 text-xs mt-6">
-          Protected by enterprise-grade security
-        </p>
       </div>
     </div>
   );

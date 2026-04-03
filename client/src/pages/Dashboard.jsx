@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import { TrendingUp, TrendingDown, Wallet, PiggyBank, Lightbulb, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Wallet, PiggyBank, Lightbulb, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
 
-const COLORS = ["#6c63ff", "#06b6d4", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6"];
+const COLORS = ["#7C3AED", "#3B82F6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444", "#EC4899", "#8B5CF6", "#6366F1", "#14B8A6"];
 
 const CATEGORY_LABELS = {
-  FOOD: "Food", TRANSPORT: "Transport", HOUSING: "Housing",
-  ENTERTAINMENT: "Entertainment", TRAVEL: "Travel", HEALTH: "Health",
-  SHOPPING: "Shopping", MISCELLANEOUS: "Misc", SALARY: "Salary", INVESTMENTS: "Investments"
+  FOOD: "Food & Dining", TRANSPORT: "Transportation", HOUSING: "Housing & Rent",
+  ENTERTAINMENT: "Entertainment", TRAVEL: "Travel", HEALTH: "Healthcare",
+  SHOPPING: "Shopping", MISCELLANEOUS: "Miscellaneous", SALARY: "Salary", INVESTMENTS: "Investments"
 };
 
 export default function Dashboard() {
@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [accounts, setAccounts] = useState([]);
   const [tip, setTip] = useState("");
   const [loading, setLoading] = useState(true);
+  const [tipLoading, setTipLoading] = useState(true);
 
   useEffect(() => {
     fetchAll();
@@ -41,167 +42,254 @@ export default function Dashboard() {
       setRecentTxns(txnRes.data.transactions);
       setAccounts(accountsRes.data.accounts);
 
-      // Fetch tip separately (might be slow)
-      try {
-        const tipRes = await API.get("/graph/tip");
-        setTip(tipRes.data.tip);
-      } catch {
-        setTip("Track your expenses regularly to identify areas where you can save more.");
-      }
+      // Fetch tip separately to not block main render
+      fetchTip();
     } catch (err) {
-      toast.error("Failed to load dashboard data");
+      toast.error("Failed to load dashboard telemetry");
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchTip = async () => {
+    setTipLoading(true);
+    try {
+      const tipRes = await API.get("/graph/tip");
+      setTip(tipRes.data.tip);
+    } catch {
+      setTip("Diversify your portfolio to mitigate risk during market volatility.");
+    } finally {
+      setTipLoading(false);
+    }
+  };
+
   const totalBalance = accounts.reduce((sum, a) => sum + parseFloat(a.balance), 0);
 
-  if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+          <p className="text-sm text-gray-500 font-mono tracking-widest uppercase">Initializing Telemetry...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const formatCurrency = (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-12 animate-in fade-in duration-500">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-navy">Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">
-          {new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-        </p>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-500 text-sm font-medium">Total Balance</span>
-            <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center">
-              <Wallet size={18} className="text-primary" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-navy">₹{totalBalance.toLocaleString("en-IN")}</p>
-          <p className="text-xs text-gray-400 mt-1">{accounts.length} account(s)</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-500 text-sm font-medium">Income</span>
-            <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
-              <TrendingUp size={18} className="text-green-500" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-green-600">₹{parseFloat(summary?.totalIncome || 0).toLocaleString("en-IN")}</p>
-          <p className="text-xs text-gray-400 mt-1">This month</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-500 text-sm font-medium">Expenses</span>
-            <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center">
-              <TrendingDown size={18} className="text-red-500" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-red-500">₹{parseFloat(summary?.totalExpense || 0).toLocaleString("en-IN")}</p>
-          <p className="text-xs text-gray-400 mt-1">This month</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-500 text-sm font-medium">Savings</span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
-              <PiggyBank size={18} className="text-blue-500" />
-            </div>
-          </div>
-          <p className={`text-2xl font-bold ${(summary?.netSavings || 0) >= 0 ? "text-blue-600" : "text-red-500"}`}>
-            ₹{parseFloat(summary?.netSavings || 0).toLocaleString("en-IN")}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/5 pb-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-white tracking-tight">Overview</h1>
+          <p className="text-gray-400 text-[13px] mt-1 flex items-center gap-2">
+            <Activity size={14} className="text-primary" />
+            Live financial telemetry
           </p>
-          <p className="text-xs text-gray-400 mt-1">This month</p>
+        </div>
+        <div className="text-right">
+          <p className="text-gray-500 text-[12px] uppercase tracking-wider font-semibold">Net Worth</p>
+          <p className="text-2xl font-bold text-white tracking-tight">{formatCurrency(totalBalance)}</p>
         </div>
       </div>
 
-      {/* AI Tip */}
-      {tip && (
-        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 rounded-2xl p-4 flex gap-3">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-            <Lightbulb size={18} color="white" />
+      {/* AI Tip Card */}
+      <div className="bg-gradient-to-r from-[#1A1A2E] to-[#111122] border border-primary/20 rounded-xl p-5 shadow-[0_0_20px_rgba(124,58,237,0.05)] relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4 group-hover:bg-primary/20 transition-colors duration-700" />
+        <div className="relative z-10 flex gap-4 items-start">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+            {tipLoading ? (
+              <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+            ) : (
+              <Lightbulb size={18} className="text-primary" />
+            )}
           </div>
           <div>
-            <p className="text-sm font-semibold text-purple-800 mb-1">AI Financial Tip</p>
-            <p className="text-sm text-purple-700">{tip}</p>
+            <h3 className="text-[13px] font-semibold text-primary uppercase tracking-wider mb-1">WealthFlow Intelligence</h3>
+            {tipLoading ? (
+              <div className="h-4 bg-white/5 rounded w-3/4 animate-pulse mt-2" />
+            ) : (
+              <p className="text-gray-300 text-[14px] leading-relaxed">{tip}</p>
+            )}
           </div>
-        </div>
-      )}
-
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Bar Chart */}
-        <div className="card p-6 lg:col-span-2">
-          <h3 className="font-semibold text-navy mb-1">Income vs Expenses</h3>
-          <p className="text-gray-400 text-xs mb-4">Last 6 months</p>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={monthlyData} barGap={4}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#94a3b8" }} />
-              <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} />
-              <Tooltip
-                contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}
-                formatter={(val) => [`₹${val.toLocaleString("en-IN")}`, ""]}
-              />
-              <Bar dataKey="income" fill="#6c63ff" radius={[4, 4, 0, 0]} name="Income" />
-              <Bar dataKey="expense" fill="#fca5a5" radius={[4, 4, 0, 0]} name="Expense" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Pie Chart */}
-        <div className="card p-6">
-          <h3 className="font-semibold text-navy mb-1">By Category</h3>
-          <p className="text-gray-400 text-xs mb-4">This month</p>
-          {categoryData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie data={categoryData} dataKey="amount" nameKey="category" cx="50%" cy="50%" outerRadius={80} innerRadius={40}>
-                  {categoryData.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(val) => [`₹${val.toLocaleString("en-IN")}`, ""]} />
-                <Legend formatter={(val) => CATEGORY_LABELS[val] || val} />
-              </PieChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="flex items-center justify-center h-48 text-gray-400 text-sm">No expense data</div>
-          )}
         </div>
       </div>
 
-      {/* Recent Transactions */}
-      <div className="card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-navy">Recent Transactions</h3>
-          <a href="/transactions" className="text-primary text-sm font-medium hover:underline">View all</a>
+      {/* KPI Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card rounded-xl p-5 group hover:border-primary/30 transition-colors">
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-8 h-8 rounded bg-green-500/10 flex items-center justify-center text-green-500">
+              <TrendingUp size={16} />
+            </div>
+            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Income</span>
+          </div>
+          <div>
+            <h4 className="text-2xl font-semibold text-white tracking-tight">
+              {formatCurrency(parseFloat(summary?.totalIncome || 0))}
+            </h4>
+            <p className="text-[12px] text-gray-500 mt-1">Current period</p>
+          </div>
         </div>
+
+        <div className="glass-card rounded-xl p-5 group hover:border-primary/30 transition-colors">
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-8 h-8 rounded bg-red-500/10 flex items-center justify-center text-red-500">
+              <TrendingDown size={16} />
+            </div>
+            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Expenses</span>
+          </div>
+          <div>
+            <h4 className="text-2xl font-semibold text-white tracking-tight">
+              {formatCurrency(parseFloat(summary?.totalExpense || 0))}
+            </h4>
+            <p className="text-[12px] text-gray-500 mt-1">Current period</p>
+          </div>
+        </div>
+
+        <div className="glass-card rounded-xl p-5 group hover:border-primary/30 transition-colors">
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-8 h-8 rounded bg-blue-500/10 flex items-center justify-center text-blue-500">
+              <PiggyBank size={16} />
+            </div>
+            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Net Savings</span>
+          </div>
+          <div>
+            <h4 className={`text-2xl font-semibold tracking-tight ${(summary?.netSavings || 0) >= 0 ? "text-white" : "text-red-400"}`}>
+              {formatCurrency(parseFloat(summary?.netSavings || 0))}
+            </h4>
+            <p className="text-[12px] text-gray-500 mt-1">Current period</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Cash Flow Chart */}
+        <div className="lg:col-span-2 glass-card rounded-xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-[14px] font-semibold text-gray-200">Cash Flow (6M)</h3>
+          </div>
+          <div className="h-[280px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={monthlyData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis 
+                  dataKey="month" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: '#6B7280', fontSize: 12 }} 
+                  dy={10}
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: '#6B7280', fontSize: 12 }}
+                  tickFormatter={(val) => `₹${val/1000}k`}
+                />
+                <Tooltip
+                  cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                  contentStyle={{ backgroundColor: '#0D111A', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+                  itemStyle={{ color: '#fff' }}
+                  formatter={(val) => [formatCurrency(val), ""]}
+                />
+                <Bar dataKey="income" fill="#10B981" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                <Bar dataKey="expense" fill="#EF4444" radius={[4, 4, 0, 0]} maxBarSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Category Distribution */}
+        <div className="glass-card rounded-xl p-6 flex flex-col">
+          <h3 className="text-[14px] font-semibold text-gray-200 mb-2">Outflows by Category</h3>
+          <p className="text-[12px] text-gray-500 mb-6">Current period</p>
+          
+          <div className="flex-1 flex flex-col justify-center">
+            {categoryData.length > 0 ? (
+              <div className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie 
+                      data={categoryData} 
+                      dataKey="amount" 
+                      nameKey="category" 
+                      cx="50%" 
+                      cy="50%" 
+                      innerRadius={60} 
+                      outerRadius={80} 
+                      stroke="rgba(255,255,255,0.05)"
+                      strokeWidth={2}
+                    >
+                      {categoryData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#0D111A', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}
+                      formatter={(val) => [formatCurrency(val), ""]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-[200px] text-sm text-gray-500">
+                Insufficient data
+              </div>
+            )}
+            
+            {/* Top 3 categories legend */}
+            {categoryData.length > 0 && (
+              <div className="mt-4 space-y-2">
+                {categoryData.sort((a,b) => b.amount - a.amount).slice(0, 3).map((item, i) => (
+                  <div key={i} className="flex items-center justify-between text-[12px]">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                      <span className="text-gray-400">{CATEGORY_LABELS[item.category] || item.category}</span>
+                    </div>
+                    <span className="font-medium text-gray-200">{formatCurrency(item.amount)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Ledger Preview */}
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-5 border-b border-white/5 flex items-center justify-between">
+          <h3 className="text-[14px] font-semibold text-gray-200">Recent Ledger Entries</h3>
+          <a href="/transactions" className="text-[12px] text-primary hover:text-primary/80 transition-colors font-medium">View Complete Ledger</a>
+        </div>
+        
         {recentTxns.length === 0 ? (
-          <p className="text-gray-400 text-sm text-center py-8">No transactions yet</p>
+          <div className="p-8 text-center text-gray-500 text-[13px]">No entries recorded</div>
         ) : (
-          <div className="space-y-3">
+          <div className="divide-y divide-white/5">
             {recentTxns.map((txn) => (
-              <div key={txn.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${txn.type === "INCOME" ? "bg-green-50" : "bg-red-50"}`}>
-                  {txn.type === "INCOME"
-                    ? <ArrowUpRight size={18} className="text-green-500" />
-                    : <ArrowDownRight size={18} className="text-red-500" />}
+              <div key={txn.id} className="p-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-[#141923] border ${txn.type === 'INCOME' ? 'border-green-500/20 text-green-500' : 'border-red-500/20 text-red-500'}`}>
+                    {txn.type === "INCOME" ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-medium text-gray-200">{txn.description || CATEGORY_LABELS[txn.category] || txn.category}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[11px] text-gray-500">{new Date(txn.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                      <span className="w-1 h-1 rounded-full bg-gray-700" />
+                      <span className="text-[11px] text-gray-500">{txn.account?.name || 'Unknown Account'}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-navy truncate">{txn.description || txn.category}</p>
-                  <p className="text-xs text-gray-400">{txn.account?.name} · {new Date(txn.date).toLocaleDateString("en-IN")}</p>
+                <div className="text-right">
+                  <p className={`text-[14px] font-semibold font-mono ${txn.type === "INCOME" ? "text-green-400" : "text-gray-200"}`}>
+                    {txn.type === "INCOME" ? "+" : "-"}{formatCurrency(parseFloat(txn.amount))}
+                  </p>
+                  <p className="text-[11px] text-gray-500 mt-0.5 uppercase tracking-wider">{txn.category}</p>
                 </div>
-                <span className={`text-sm font-semibold ${txn.type === "INCOME" ? "text-green-600" : "text-red-500"}`}>
-                  {txn.type === "INCOME" ? "+" : "-"}₹{parseFloat(txn.amount).toLocaleString("en-IN")}
-                </span>
               </div>
             ))}
           </div>
