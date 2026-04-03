@@ -27,49 +27,41 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Dark navy + violet fintech theme */
 :root {
-  --background: oklch(0.11 0.025 265);
-  --foreground: oklch(0.96 0.005 265);
-  --card: oklch(0.15 0.025 265);
-  --card-foreground: oklch(0.96 0.005 265);
-  --popover: oklch(0.15 0.025 265);
-  --popover-foreground: oklch(0.96 0.005 265);
-  --primary: oklch(0.65 0.22 275);
+  --background: oklch(0.11 0.02 265);
+  --foreground: oklch(0.95 0.005 265);
+  --card: oklch(0.15 0.022 265);
+  --card-foreground: oklch(0.95 0.005 265);
+  --popover: oklch(0.15 0.022 265);
+  --popover-foreground: oklch(0.95 0.005 265);
+  --primary: oklch(0.62 0.22 278);
   --primary-foreground: oklch(0.98 0.002 265);
-  --secondary: oklch(0.20 0.03 265);
-  --secondary-foreground: oklch(0.96 0.005 265);
-  --muted: oklch(0.20 0.03 265);
-  --muted-foreground: oklch(0.60 0.02 265);
-  --accent: oklch(0.65 0.22 275);
+  --secondary: oklch(0.20 0.025 265);
+  --secondary-foreground: oklch(0.95 0.005 265);
+  --muted: oklch(0.20 0.025 265);
+  --muted-foreground: oklch(0.58 0.018 265);
+  --accent: oklch(0.62 0.22 278);
   --accent-foreground: oklch(0.98 0.002 265);
   --destructive: oklch(0.55 0.2 25);
-  --border: oklch(0.25 0.03 265);
-  --input: oklch(0.20 0.03 265);
-  --ring: oklch(0.65 0.22 275);
-  --chart-1: oklch(0.65 0.22 275);
-  --chart-2: oklch(0.70 0.18 195);
-  --chart-3: oklch(0.68 0.18 145);
-  --chart-4: oklch(0.72 0.18 55);
-  --chart-5: oklch(0.62 0.20 15);
-  --radius: 0.75rem;
+  --border: oklch(0.26 0.025 265);
+  --input: oklch(0.18 0.022 265);
+  --ring: oklch(0.62 0.22 278);
+  --radius: 0.625rem;
 }
 
 @layer base {
   * {
     border-color: var(--border);
-    outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
+  }
+
+  html {
+    color-scheme: dark;
   }
 
   body {
@@ -77,18 +69,60 @@
     color: var(--foreground);
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input, select, textarea {
+    color-scheme: dark;
+    color: oklch(0.93 0.005 265);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: oklch(0.45 0.015 265);
+  }
+
+  select option {
+    background-color: oklch(0.17 0.022 265);
+    color: oklch(0.93 0.005 265);
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: oklch(0.30 0.03 265); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: oklch(0.65 0.22 275 / 0.6); }
+::-webkit-scrollbar-thumb { background: oklch(0.28 0.025 265); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: oklch(0.62 0.22 278 / 0.5); }
 
-/* Glass card utility */
-.glass-card {
-  background: oklch(0.15 0.025 265 / 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid oklch(1 0 0 / 0.05);
+.input-base {
+  width: 100%;
+  background-color: oklch(0.18 0.022 265);
+  border: 1.5px solid oklch(0.28 0.025 265);
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: oklch(0.93 0.005 265);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input-base:focus {
+  border-color: oklch(0.62 0.22 278 / 0.7);
+  box-shadow: 0 0 0 3px oklch(0.62 0.22 278 / 0.12);
+}
+
+.card-surface {
+  background: oklch(0.15 0.022 265);
+  border: 1px solid oklch(0.26 0.025 265);
+  border-radius: 0.875rem;
+}
+
+.card-surface-hover {
+  transition: background 0.15s;
+}
+
+.card-surface-hover:hover {
+  background: oklch(0.17 0.022 265);
 }
