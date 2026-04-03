@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id              String           @id @default(uuid())
+  email           String           @unique
+  password        String
+  name            String?
+  imageUrl        String?
+  transactions    Transaction[]
+  accounts        Account[]
+  scheduledEmails ScheduledEmail[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  reports         Report[]
+
+  @@map("users")
+}
+
+model Account {
+  id              String           @id @default(uuid())
+  name            String
+  balance         Decimal          @default(0)
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions    Transaction[]
+  scheduledEmails ScheduledEmail[]
+  budget          Decimal?
+  usedAmount      Decimal          @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Transaction {
+  id                String              @id @default(uuid())
+  type              TransactionType
+  amount            Decimal
+  description       String?
+  date              DateTime
+  category          TransactionCategory
+  receiptUrl        String?
+  isRecurring       Boolean             @default(false)
+  recurringInterval RecurringInterval?
+  nextRecurringDate DateTime?
+  userId            String
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId         String
+  account           Account             @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@index([userId])
+  @@index([accountId])
+  @@map("transactions")
+}
+
+model ScheduledEmail {
+  id        String      @id @default(uuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId String
+  account   Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  type      EmailType
+  status    EmailStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+
+  @@map("scheduled_emails")
+}
+
+model Report {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month     Int
+  year      Int
+  data      Json
+  createdAt DateTime @default(now())
+
+  @@unique([userId, month, year])
+  @@index([userId])
+  @@map("reports")
+}
+
+enum EmailType {
+  BUDGET_ALERT
+  MONTHLY_REPORT
+}
+
+enum EmailStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum RecurringInterval {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum TransactionCategory {
+  SALARY
+  INVESTMENTS
+  FOOD
+  TRANSPORT
+  HOUSING
+  ENTERTAINMENT
+  TRAVEL
+  HEALTH
+  SHOPPING
+  MISCELLANEOUS
+}
