@@ -1,0 +1,63 @@
+modules = ["nodejs-20", "web"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+FRONTEND_DOMAIN = "*"
+PORT = "3000"
+JWT_SECRET = "wealthflow-dev-secret-key"
+NODE_ENV = "development"
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Backend"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd client && npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow]]
+name = "Backend"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd server && node app.js"
+waitForPort = 3000
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["bash", "-c", "cd server && node app.js & cd client && npx vite preview --host 0.0.0.0 --port 5000"]
+build = ["bash", "-c", "cd client && npm install && npm run build && cd ../server && npm install && npx prisma migrate deploy"]
