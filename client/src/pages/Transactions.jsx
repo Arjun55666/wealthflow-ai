@@ -253,12 +253,23 @@ export default function Transactions() {
       </div>
 
       {showModal && createPortal(
-        <>
-          <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md" onClick={() => setShowModal(false)} />
-          <div className="fixed inset-0 z-[101] overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4">
-              <div className="bg-[#0E1220] border border-white/8 rounded-2xl w-full max-w-md shadow-[0_32px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 fade-in duration-200">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/5 bg-[#0E1220] rounded-t-2xl">
+        <div
+          onClick={() => setShowModal(false)}
+          style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            zIndex: 9999, overflowY: "auto",
+            backgroundColor: "rgba(0,0,0,0.75)",
+            backdropFilter: "blur(8px)",
+            display: "flex", alignItems: "flex-start", justifyContent: "center",
+            padding: "32px 16px",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "100%", maxWidth: "448px" }}
+            className="bg-[#0E1220] border border-white/8 rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
+          >
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
               <h2 className="text-[15px] font-semibold text-white">New Transaction</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5">
                 <X size={17} />
@@ -286,18 +297,12 @@ export default function Transactions() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="flex p-1 bg-[#141928] rounded-xl border border-white/5 gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setForm({ ...form, type: "EXPENSE" })}
-                    className={`flex-1 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${form.type === "EXPENSE" ? "bg-red-500/80 text-white shadow-sm" : "text-gray-500 hover:text-gray-300"}`}
-                  >
+                  <button type="button" onClick={() => setForm({ ...form, type: "EXPENSE" })}
+                    className={`flex-1 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${form.type === "EXPENSE" ? "bg-red-500/80 text-white shadow-sm" : "text-gray-500 hover:text-gray-300"}`}>
                     Expense
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setForm({ ...form, type: "INCOME" })}
-                    className={`flex-1 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${form.type === "INCOME" ? "bg-green-500/80 text-white shadow-sm" : "text-gray-500 hover:text-gray-300"}`}
-                  >
+                  <button type="button" onClick={() => setForm({ ...form, type: "INCOME" })}
+                    className={`flex-1 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${form.type === "INCOME" ? "bg-green-500/80 text-white shadow-sm" : "text-gray-500 hover:text-gray-300"}`}>
                     Income
                   </button>
                 </div>
@@ -305,57 +310,37 @@ export default function Transactions() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-[12px] font-medium text-gray-500">Amount (₹)</label>
-                    <input
-                      type="number"
-                      required
-                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[14px] text-white placeholder:text-gray-700 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200"
-                      placeholder="0"
-                      value={form.amount}
+                    <input type="number" required placeholder="0" value={form.amount}
                       onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                    />
+                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[14px] text-white placeholder:text-gray-700 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200" />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[12px] font-medium text-gray-500">Date</label>
-                    <input
-                      type="date"
-                      required
-                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[14px] text-gray-300 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200"
-                      value={form.date}
+                    <input type="date" required value={form.date}
                       onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    />
+                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[14px] text-gray-300 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200" />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="text-[12px] font-medium text-gray-500">Description</label>
-                  <input
-                    type="text"
-                    className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[14px] text-white placeholder:text-gray-700 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200"
-                    placeholder="What was this for?"
-                    value={form.description}
+                  <input type="text" placeholder="What was this for?" value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  />
+                    className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[14px] text-white placeholder:text-gray-700 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-[12px] font-medium text-gray-500">Category</label>
-                    <select
-                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[13px] text-gray-300 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200 appearance-none"
-                      value={form.category}
-                      onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    >
+                    <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
+                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[13px] text-gray-300 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200 appearance-none">
                       {CATEGORIES.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
                     </select>
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[12px] font-medium text-gray-500">Account</label>
-                    <select
-                      required
-                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[13px] text-gray-300 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200 appearance-none"
-                      value={form.accountId}
-                      onChange={(e) => setForm({ ...form, accountId: e.target.value })}
-                    >
+                    <select required value={form.accountId} onChange={(e) => setForm({ ...form, accountId: e.target.value })}
+                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[13px] text-gray-300 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200 appearance-none">
                       {accounts.length === 0 && <option value="">No accounts</option>}
                       {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     </select>
@@ -365,50 +350,34 @@ export default function Transactions() {
                 <div className="p-3.5 bg-[#141928] rounded-xl border border-white/5 flex items-center justify-between">
                   <label htmlFor="recurring" className="text-[13px] text-gray-400 select-none cursor-pointer">Recurring transaction</label>
                   <div className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      id="recurring"
-                      className="sr-only peer"
-                      checked={form.isRecurring}
-                      onChange={(e) => setForm({ ...form, isRecurring: e.target.checked })}
-                    />
+                    <input type="checkbox" id="recurring" className="sr-only peer" checked={form.isRecurring}
+                      onChange={(e) => setForm({ ...form, isRecurring: e.target.checked })} />
                     <div className="w-9 h-5 bg-white/8 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary transition-colors duration-200" />
                   </div>
                 </div>
 
                 {form.isRecurring && (
-                  <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="space-y-1.5">
                     <label className="text-[12px] font-medium text-gray-500">Repeat every</label>
-                    <select
-                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[13px] text-gray-300 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200 appearance-none"
-                      value={form.recurringInterval}
-                      onChange={(e) => setForm({ ...form, recurringInterval: e.target.value })}
-                    >
+                    <select value={form.recurringInterval} onChange={(e) => setForm({ ...form, recurringInterval: e.target.value })}
+                      className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 px-3 text-[13px] text-gray-300 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200 appearance-none">
                       {INTERVALS.map((i) => <option key={i} value={i}>{i.charAt(0) + i.slice(1).toLowerCase()}</option>)}
                     </select>
                   </div>
                 )}
 
                 <div className="pt-2">
-                  <button
-                    type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 text-white py-2.5 rounded-xl text-[14px] font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none shadow-[0_0_20px_oklch(0.60_0.22_278/0.2)]"
-                    disabled={submitting}
-                  >
+                  <button type="submit" disabled={submitting}
+                    className="w-full bg-primary hover:bg-primary/90 text-white py-2.5 rounded-xl text-[14px] font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none shadow-[0_0_20px_oklch(0.60_0.22_278/0.2)]">
                     {submitting ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white/25 border-t-white rounded-full animate-spin" />
-                        Saving...
-                      </>
+                      <><div className="w-4 h-4 border-2 border-white/25 border-t-white rounded-full animate-spin" />Saving...</>
                     ) : "Save Transaction"}
                   </button>
                 </div>
               </form>
             </div>
-              </div>
-            </div>
           </div>
-        </>,
+        </div>,
         document.body
       )}
     </div>
