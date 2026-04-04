@@ -156,7 +156,7 @@ export default function Dashboard() {
           </div>
           <div className="h-[240px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyData} margin={{ top: 0, right: 0, left: -24, bottom: 0 }} barCategoryGap="30%">
+              <BarChart data={monthlyData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }} barCategoryGap="30%">
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
                 <XAxis
                   dataKey="month"
@@ -170,6 +170,7 @@ export default function Dashboard() {
                   tickLine={false}
                   tick={{ fill: '#4B5563', fontSize: 11 }}
                   tickFormatter={(val) => `₹${val / 1000}k`}
+                  width={48}
                 />
                 <Tooltip
                   cursor={{ fill: 'rgba(255,255,255,0.02)' }}
