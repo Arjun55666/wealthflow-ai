@@ -3,17 +3,7 @@ import { TrendingUp, TrendingDown, Wallet, PiggyBank, Lightbulb, ArrowUpRight, A
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
-
-const COLORS = ["#7C3AED", "#3B82F6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444", "#EC4899", "#8B5CF6", "#6366F1", "#14B8A6"];
-
-const CATEGORY_LABELS = {
-  FOOD: "Food & Dining", TRANSPORT: "Transportation", HOUSING: "Housing & Rent",
-  ENTERTAINMENT: "Entertainment", TRAVEL: "Travel", HEALTH: "Healthcare",
-  SHOPPING: "Shopping", MISCELLANEOUS: "Miscellaneous", SALARY: "Salary", INVESTMENTS: "Investments"
-};
-
-const formatCurrency = (val) =>
-  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(val);
+import { COLORS, CATEGORY_LABELS, formatCurrency } from "../utils/constants";
 
 const StatCard = ({ icon: Icon, iconBg, iconColor, label, value, sub }) => (
   <div className="glass-card rounded-2xl p-5 group hover:border-white/12 transition-all duration-300">

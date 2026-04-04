@@ -2,17 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Plus, Trash2, Upload, X, RefreshCw, ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
-
-const CATEGORIES = ["SALARY", "INVESTMENTS", "FOOD", "TRANSPORT", "HOUSING", "ENTERTAINMENT", "TRAVEL", "HEALTH", "SHOPPING", "MISCELLANEOUS"];
-const CATEGORY_LABELS = {
-  FOOD: "Food & Dining", TRANSPORT: "Transportation", HOUSING: "Housing & Rent",
-  ENTERTAINMENT: "Entertainment", TRAVEL: "Travel", HEALTH: "Healthcare",
-  SHOPPING: "Shopping", MISCELLANEOUS: "Misc", SALARY: "Salary", INVESTMENTS: "Investments"
-};
-const INTERVALS = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"];
-
-const formatCurrency = (val) =>
-  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(val);
+import { CATEGORIES, CATEGORY_LABELS, INTERVALS, formatCurrency } from "../utils/constants";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);

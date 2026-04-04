@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, Trash2, Wallet, Building2, Landmark, X } from "lucide-react";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
-
-const formatCurrency = (val) =>
-  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(val);
+import { formatCurrency } from "../utils/constants";
 
 export default function Accounts() {
   const [accounts, setAccounts] = useState([]);

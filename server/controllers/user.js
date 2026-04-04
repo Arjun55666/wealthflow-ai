@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
-  console.log("Register endpoint hit with data:", req.body); // Debug log 
   try {
     const { email, password, name } = req.body;
 
