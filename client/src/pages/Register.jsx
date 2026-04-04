@@ -5,6 +5,19 @@ import { useAuth } from "../context/AuthContext";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
 
+const InputField = ({ icon: Icon, rightElement, ...props }) => (
+  <div className="flex items-center bg-[#141928] border border-white/[0.08] rounded-xl transition-all duration-200 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20 group">
+    <div className="pl-3.5 pr-2 flex items-center flex-shrink-0">
+      <Icon size={15} className="text-gray-600 group-focus-within:text-primary/70 transition-colors duration-200" />
+    </div>
+    <input
+      {...props}
+      className="flex-1 min-w-0 bg-transparent py-2.5 pr-3 text-[14px] text-white placeholder:text-gray-600 focus:outline-none"
+    />
+    {rightElement}
+  </div>
+);
+
 export default function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -67,65 +80,52 @@ export default function Register() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <label className="text-[12px] font-medium text-gray-400 block tracking-wide">Full name</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <User size={15} className="text-gray-600 group-focus-within:text-primary/80 transition-colors duration-200" />
-                </div>
-                <input
-                  type="text"
-                  required
-                  autoComplete="name"
-                  className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 pl-10 pr-4 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
-                  placeholder="John Doe"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                />
-              </div>
+              <InputField
+                icon={User}
+                type="text"
+                required
+                autoComplete="name"
+                placeholder="John Doe"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-[12px] font-medium text-gray-400 block tracking-wide">Email address</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail size={15} className="text-gray-600 group-focus-within:text-primary/80 transition-colors duration-200" />
-                </div>
-                <input
-                  type="email"
-                  required
-                  autoComplete="email"
-                  className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 pl-10 pr-4 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                />
-              </div>
+              <InputField
+                icon={Mail}
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-[12px] font-medium text-gray-400 block tracking-wide">Password</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock size={15} className="text-gray-600 group-focus-within:text-primary/80 transition-colors duration-200" />
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  autoComplete="new-password"
-                  className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 pl-10 pr-11 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
-                  placeholder="Minimum 8 characters"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-600 hover:text-gray-400 transition-colors focus:outline-none"
-                  tabIndex={-1}
-                >
-                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
-                </button>
-              </div>
-              <p className="text-[11px] text-gray-600 mt-1">Must be at least 8 characters long</p>
+              <InputField
+                icon={Lock}
+                type={showPassword ? "text" : "password"}
+                required
+                autoComplete="new-password"
+                placeholder="Minimum 8 characters"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                rightElement={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="pr-3.5 flex items-center text-gray-600 hover:text-gray-400 transition-colors focus:outline-none flex-shrink-0"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                }
+              />
+              <p className="text-[11px] text-gray-600">Must be at least 8 characters long</p>
             </div>
 
             <div className="pt-1">
