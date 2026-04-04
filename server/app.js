@@ -8,7 +8,21 @@ const app = express();
 
 app.set("trust proxy", true);
 app.use(helmet());
-app.use(cors({ origin: process.env.FRONTEND_DOMAIN, credentials: true }));
+const allowedOrigins = [
+  process.env.FRONTEND_DOMAIN,
+  /\.vercel\.app$/,
+  "http://localhost:5000",
+];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const allowed = allowedOrigins.some((o) =>
+      typeof o === "string" ? o === origin : o.test(origin)
+    );
+    callback(allowed ? null : new Error("CORS not allowed"), allowed);
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 const userRoutes = require("./routes/user");
