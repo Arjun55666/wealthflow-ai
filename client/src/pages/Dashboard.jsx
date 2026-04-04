@@ -222,7 +222,7 @@ export default function Dashboard() {
                       </PieChart>
                     </ResponsiveContainer>
                     <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center", pointerEvents: "none" }}>
-                      <div style={{ fontSize: "11px", color: "#6b7280" }}>Total</div>
+                      <div style={{ fontSize: "11px", color: "#6b7280" }}>Expenses</div>
                       <div style={{ fontSize: "14px", fontWeight: 600, color: "#e5e7eb" }}>{formatCurrency(total)}</div>
                     </div>
                   </div>
