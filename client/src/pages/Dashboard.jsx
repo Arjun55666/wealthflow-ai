@@ -190,46 +190,56 @@ export default function Dashboard() {
             <p className="text-[12px] text-gray-600 mt-0.5">Current period</p>
           </div>
           <div className="flex-1 flex flex-col justify-center">
-            {categoryData.length > 0 ? (
-              <>
-                <div className="h-[160px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={categoryData}
-                        dataKey="amount"
-                        nameKey="category"
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={52}
-                        outerRadius={72}
-                        stroke="transparent"
-                        strokeWidth={0}
-                      >
-                        {categoryData.map((_, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{ backgroundColor: '#0E1220', borderColor: 'rgba(255,255,255,0.08)', borderRadius: '10px', fontSize: '12px' }}
-                        formatter={(val) => [formatCurrency(val), ""]}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-3 space-y-2">
-                  {[...categoryData].sort((a, b) => b.amount - a.amount).slice(0, 3).map((item, i) => (
-                    <div key={i} className="flex items-center justify-between text-[12px]">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="text-gray-400 truncate">{CATEGORY_LABELS[item.category] || item.category}</span>
-                      </div>
-                      <span className="font-medium text-gray-300 ml-2">{formatCurrency(item.amount)}</span>
+            {categoryData.length > 0 ? (() => {
+              const coloredData = categoryData.map((item, index) => ({ ...item, color: COLORS[index % COLORS.length] }));
+              const sorted = [...coloredData].sort((a, b) => b.amount - a.amount);
+              const total = categoryData.reduce((sum, item) => sum + item.amount, 0);
+              return (
+                <>
+                  <div className="h-[180px] relative">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={coloredData}
+                          dataKey="amount"
+                          nameKey="category"
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={55}
+                          outerRadius={78}
+                          stroke="transparent"
+                          strokeWidth={0}
+                          paddingAngle={2}
+                        >
+                          {coloredData.map((item, index) => (
+                            <Cell key={`cell-${index}`} fill={item.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#0E1220', borderColor: 'rgba(255,255,255,0.08)', borderRadius: '10px', fontSize: '12px' }}
+                          formatter={(val, name, props) => [formatCurrency(val), CATEGORY_LABELS[props.payload.category] || props.payload.category]}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center", pointerEvents: "none" }}>
+                      <div style={{ fontSize: "11px", color: "#6b7280" }}>Total</div>
+                      <div style={{ fontSize: "14px", fontWeight: 600, color: "#e5e7eb" }}>{formatCurrency(total)}</div>
                     </div>
-                  ))}
-                </div>
-              </>
-            ) : (
+                  </div>
+                  <div className="mt-2 space-y-2">
+                    {sorted.slice(0, 4).map((item, i) => (
+                      <div key={i} className="flex items-center justify-between text-[12px]">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                          <span className="text-gray-400 truncate">{CATEGORY_LABELS[item.category] || item.category}</span>
+                        </div>
+                        <span className="font-medium text-gray-300 ml-2">{formatCurrency(item.amount)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              );
+            })() : (
               <div className="flex items-center justify-center h-[160px] text-[13px] text-gray-600">
                 No data yet
               </div>
