@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Plus, Trash2, Upload, X, RefreshCw, ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
@@ -251,7 +252,7 @@ export default function Transactions() {
         )}
       </div>
 
-      {showModal && (
+      {showModal && createPortal(
         <>
           <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md" onClick={() => setShowModal(false)} />
           <div className="fixed inset-0 z-[101] overflow-y-auto">
@@ -407,7 +408,8 @@ export default function Transactions() {
               </div>
             </div>
           </div>
-        </>
+        </>,
+        document.body
       )}
     </div>
   );
