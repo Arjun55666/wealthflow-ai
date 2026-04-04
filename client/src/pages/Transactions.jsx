@@ -65,7 +65,11 @@ export default function Transactions() {
         date: d.date || f.date,
         type: "EXPENSE",
       }));
-      toast.success("Receipt scanned successfully", { id: toastId });
+      if (data.demo) {
+        toast.success("Demo data filled in (AI quota reached — edit fields as needed)", { id: toastId, duration: 5000 });
+      } else {
+        toast.success("Receipt scanned successfully!", { id: toastId });
+      }
     } catch {
       toast.error("Could not scan receipt, please enter details manually", { id: toastId });
     } finally {

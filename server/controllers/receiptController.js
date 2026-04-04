@@ -18,8 +18,9 @@ const scanReceipt = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Receipt parsed successfully",
+      message: result.demo ? "Demo receipt data (API quota reached)" : "Receipt parsed successfully",
       data: result.data,
+      demo: result.demo || false,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
