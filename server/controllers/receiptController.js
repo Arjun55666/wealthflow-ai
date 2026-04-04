@@ -10,9 +10,10 @@ const scanReceipt = async (req, res) => {
     const result = await parseReceipt(req.file.path);
 
     // Delete temp file after processing
-    fs.unlinkSync(req.file.path);
+    if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
 
     if (!result.success) {
+      console.error("Receipt parsing failed:", result.error);
       return res.status(500).json({ message: "Failed to parse receipt", error: result.error });
     }
 

@@ -36,6 +36,7 @@ const parseReceipt = async (imagePath) => {
 
     return { success: true, data: parsed };
   } catch (error) {
+    console.error("Gemini receipt scan error:", error.message);
     return { success: false, error: error.message };
   }
 };
