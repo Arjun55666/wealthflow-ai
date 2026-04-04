@@ -9,6 +9,15 @@ const redis = require("../utils/redisClient");
 // Monthly income vs expense for last 6 months
 router.get("/monthly", protect, async (req, res) => {
   try {
+    const cacheKey = `monthly:${req.user.userId}`;
+
+    if (redis) {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        return res.status(200).json({ data: JSON.parse(cached), fromCache: true });
+      }
+    }
+
     const results = [];
     const now = new Date();
 
@@ -43,7 +52,11 @@ router.get("/monthly", protect, async (req, res) => {
       });
     }
 
-    res.status(200).json({ data: results });
+    if (redis) {
+      await redis.set(cacheKey, JSON.stringify(results), "EX", 600);
+    }
+
+    res.status(200).json({ data: results, fromCache: false });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -55,9 +68,22 @@ router.get("/categories", protect, async (req, res) => {
     const now = new Date();
     const month = parseInt(req.query.month) || now.getMonth() + 1;
     const year = parseInt(req.query.year) || now.getFullYear();
+    const cacheKey = `categories:${req.user.userId}:${month}:${year}`;
+
+    if (redis) {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        return res.status(200).json({ data: JSON.parse(cached), fromCache: true });
+      }
+    }
 
     const data = await getMonthlyCategoryExpenses(req.user.userId, month, year);
-    res.status(200).json({ data });
+
+    if (redis) {
+      await redis.set(cacheKey, JSON.stringify(data), "EX", 600);
+    }
+
+    res.status(200).json({ data, fromCache: false });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -69,13 +95,26 @@ router.get("/tip", protect, async (req, res) => {
     const now = new Date();
     const month = now.getMonth() + 1;
     const year = now.getFullYear();
+    const cacheKey = `tip:${req.user.userId}`;
+
+    if (redis) {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        return res.status(200).json({ tip: cached, fromCache: true });
+      }
+    }
 
     const categoryExpenses = await getMonthlyCategoryExpenses(
       req.user.userId, month, year
     );
 
     const tip = await generateFinancialTip(categoryExpenses);
-    res.status(200).json({ tip });
+
+    if (redis) {
+      await redis.set(cacheKey, tip, "EX", 3600);
+    }
+
+    res.status(200).json({ tip, fromCache: false });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
