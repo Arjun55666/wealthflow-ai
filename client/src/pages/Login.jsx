@@ -15,7 +15,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email || !form.password) {
-      toast.error("Please provide both email and password");
+      toast.error("Please enter your email and password");
       return;
     }
     setLoading(true);
@@ -25,50 +25,54 @@ export default function Login() {
       toast.success(`Welcome back, ${data.user.name}`);
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Authentication failed");
+      toast.error(err.response?.data?.message || "Sign in failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-[#0A0D14] text-gray-100 relative overflow-hidden selection:bg-primary/30">
-      
-      {/* Abstract background elements */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[150px] pointer-events-none mix-blend-screen" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/5 blur-[120px] pointer-events-none mix-blend-screen" />
-      
-      {/* Grid overlay */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMCAwaDQwdjQwSDB6IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)] pointer-events-none" />
+    <div className="min-h-[100dvh] flex items-center justify-center p-4 bg-[#090C13] text-gray-100 relative overflow-hidden selection:bg-primary/30">
 
-      <div className="w-full max-w-[420px] relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
-        
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="w-14 h-14 rounded-xl bg-[#0D111A] border border-white/10 mx-auto flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(124,58,237,0.15)] relative group">
-            <div className="absolute inset-0 rounded-xl bg-primary/20 blur-md group-hover:bg-primary/30 transition-colors duration-500" />
-            <TrendingUp size={24} className="text-primary relative z-10" strokeWidth={2.5} />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full bg-primary/6 blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-blue-600/4 blur-[120px] pointer-events-none" />
+
+      <div
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{
+          backgroundImage: `radial-gradient(circle, oklch(0.60 0.22 278 / 0.06) 1px, transparent 1px)`,
+          backgroundSize: "36px 36px",
+          maskImage: "radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%)",
+        }}
+      />
+
+      <div className="w-full max-w-[400px] relative z-10 animate-in fade-in slide-in-from-bottom-6 duration-500 ease-out">
+
+        <div className="text-center mb-8">
+          <div className="relative inline-flex mb-5">
+            <div className="w-12 h-12 rounded-2xl bg-primary/15 border border-primary/25 flex items-center justify-center shadow-[0_0_32px_oklch(0.60_0.22_278/0.25)]">
+              <TrendingUp size={22} className="text-primary" strokeWidth={2.5} />
+            </div>
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">WealthFlow Terminal</h1>
-          <p className="text-gray-400 text-[15px]">Institutional-grade personal finance</p>
+          <h1 className="text-[28px] font-semibold tracking-tight text-white mb-1.5">WealthFlow</h1>
+          <p className="text-gray-500 text-[14px]">Sign in to your account</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-[#0D111A]/80 backdrop-blur-xl rounded-2xl border border-white/5 p-8 shadow-2xl shadow-black/50">
-          <h2 className="text-xl font-medium text-white mb-6">Authenticate</h2>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="bg-[#0E1220]/90 backdrop-blur-2xl rounded-2xl border border-white/6 p-7 shadow-[0_24px_64px_rgba(0,0,0,0.5)]">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-[13px] font-medium text-gray-400 block">Email</label>
+              <label className="text-[12px] font-medium text-gray-400 block tracking-wide">Email address</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail size={16} className="text-gray-500 group-focus-within:text-primary transition-colors" />
+                  <Mail size={15} className="text-gray-600 group-focus-within:text-primary/80 transition-colors duration-200" />
                 </div>
                 <input
                   type="email"
                   required
-                  className="w-full bg-[#141923] border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
-                  placeholder="name@domain.com"
+                  autoComplete="email"
+                  className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 pl-10 pr-4 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
+                  placeholder="you@example.com"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
@@ -76,56 +80,58 @@ export default function Login() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[13px] font-medium text-gray-400 block">Password</label>
+              <label className="text-[12px] font-medium text-gray-400 block tracking-wide">Password</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock size={16} className="text-gray-500 group-focus-within:text-primary transition-colors" />
+                  <Lock size={15} className="text-gray-600 group-focus-within:text-primary/80 transition-colors duration-200" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  className="w-full bg-[#141923] border border-white/10 rounded-lg py-2.5 pl-10 pr-11 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-mono tracking-wider"
+                  autoComplete="current-password"
+                  className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 pl-10 pr-11 text-[14px] text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
                   placeholder="••••••••"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-gray-300 transition-colors focus:outline-none"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-600 hover:text-gray-400 transition-colors focus:outline-none"
                   tabIndex={-1}
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg py-2.5 px-4 text-[14px] font-medium flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none mt-2 shadow-[0_0_20px_rgba(124,58,237,0.2)]" 
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  <span>Authenticating...</span>
-                </>
-              ) : (
-                <>
-                  <span>Access Terminal</span>
-                  <ArrowRight size={16} />
-                </>
-              )}
-            </button>
+            <div className="pt-1">
+              <button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-2.5 px-4 text-[14px] font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none shadow-[0_0_24px_oklch(0.60_0.22_278/0.25)] hover:shadow-[0_0_32px_oklch(0.60_0.22_278/0.35)]"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/25 border-t-white rounded-full animate-spin" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Sign in</span>
+                    <ArrowRight size={15} />
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
-        
-        {/* Footer */}
-        <div className="mt-8 text-center">
+
+        <div className="mt-6 text-center">
           <p className="text-[13px] text-gray-500">
-            No access credentials?{" "}
-            <Link to="/register" className="text-primary hover:text-primary-foreground font-medium transition-colors">
-              Request access
+            Don't have an account?{" "}
+            <Link to="/register" className="text-primary hover:text-primary/80 font-medium transition-colors">
+              Create one
             </Link>
           </p>
         </div>

@@ -7,40 +7,28 @@ import Transactions from "./pages/Transactions";
 import Accounts from "./pages/Accounts";
 import Reports from "./pages/Reports";
 import Layout from "./components/Layout";
-import { Activity } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
-// Protected Route
+const LoadingScreen = () => (
+  <div className="min-h-[100dvh] flex items-center justify-center bg-[#090C13]">
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-10 h-10 rounded-2xl bg-primary/15 border border-primary/25 flex items-center justify-center shadow-[0_0_24px_oklch(0.60_0.22_278/0.2)]">
+        <TrendingUp size={18} className="text-primary animate-pulse" strokeWidth={2.5} />
+      </div>
+      <p className="text-[13px] text-gray-600 tracking-widest uppercase font-medium">Loading...</p>
+    </div>
+  </div>
+);
+
 const ProtectedRoute = ({ children }) => {
   const { token, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-[#0A0D14]">
-        <div className="flex flex-col items-center gap-4">
-          <Activity className="text-primary animate-pulse" size={32} />
-          <p className="text-sm text-gray-500 font-mono tracking-widest uppercase">Initializing Secure Context...</p>
-        </div>
-      </div>
-    );
-  }
-
+  if (loading) return <LoadingScreen />;
   return token ? children : <Navigate to="/login" />;
 };
 
-// Public Route
 const PublicRoute = ({ children }) => {
   const { token, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-[#0A0D14]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
-        </div>
-      </div>
-    );
-  }
-
+  if (loading) return <LoadingScreen />;
   return token ? <Navigate to="/dashboard" /> : children;
 };
 
