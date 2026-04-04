@@ -41,8 +41,10 @@ export default function Layout({ children }) {
       )}
 
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-60 bg-[#0C0F1A] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          sidebarOpen ? "translate-x-0 border-r border-white/5" : "-translate-x-full lg:translate-x-0 lg:border-r lg:border-white/5"
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-60 bg-[#0C0F1A] flex flex-col transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          sidebarOpen
+            ? "translate-x-0 opacity-100 pointer-events-auto border-r border-white/5"
+            : "-translate-x-full opacity-0 pointer-events-none lg:translate-x-0 lg:opacity-100 lg:pointer-events-auto lg:border-r lg:border-white/5"
         }`}
       >
         <div className="flex items-center gap-2.5 px-5 h-14 border-b border-white/5">
