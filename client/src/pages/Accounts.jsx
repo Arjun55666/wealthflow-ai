@@ -192,13 +192,13 @@ export default function Accounts() {
             <form onSubmit={handleCreate} className="p-5 space-y-4">
               <div className="space-y-1.5">
                 <label className="text-[12px] font-medium text-gray-500 block">Account name</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div className="flex items-center bg-[#141928] border border-white/[0.08] rounded-xl transition-all duration-200 focus-within:border-primary/45 focus-within:ring-1 focus-within:ring-primary/15">
+                  <div className="pl-3.5 pr-2 flex items-center flex-shrink-0">
                     <Building2 size={15} className="text-gray-600" />
                   </div>
                   <input
                     required
-                    className="w-full bg-[#141928] border border-white/8 rounded-xl py-2.5 pl-10 pr-3 text-[14px] text-white placeholder:text-gray-700 focus:outline-none focus:border-primary/45 focus:ring-1 focus:ring-primary/15 transition-all duration-200"
+                    className="flex-1 min-w-0 bg-transparent py-2.5 pr-3 text-[14px] text-white placeholder:text-gray-600 focus:outline-none"
                     placeholder="e.g. Savings, Checking"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}

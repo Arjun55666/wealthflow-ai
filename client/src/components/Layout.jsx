@@ -85,7 +85,7 @@ export default function Layout({ children }) {
 
         <div className="p-3 border-t border-white/5">
           <div className="flex items-center gap-2.5 p-2.5 mb-2 rounded-xl bg-white/3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/20 flex items-center justify-center text-white font-semibold text-[13px] flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-semibold text-[13px] flex-shrink-0">
               {user?.name?.charAt(0)?.toUpperCase() || "U"}
             </div>
             <div className="flex-1 min-w-0">
