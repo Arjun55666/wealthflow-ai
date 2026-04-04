@@ -113,7 +113,10 @@ export default function Transactions() {
           <p className="text-gray-500 text-[13px] mt-0.5">Track your income and expenses</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setForm({ type: "EXPENSE", amount: "", description: "", date: new Date().toISOString().split("T")[0], category: "FOOD", accountId: accounts[0]?.id || "", isRecurring: false, recurringInterval: "MONTHLY" });
+            setShowModal(true);
+          }}
           className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl text-[13px] font-medium flex items-center gap-2 transition-all duration-200 shadow-[0_0_16px_oklch(0.60_0.22_278/0.22)] hover:shadow-[0_0_24px_oklch(0.60_0.22_278/0.32)] active:scale-95 w-full sm:w-auto justify-center"
         >
           <Plus size={15} />
@@ -296,13 +299,17 @@ export default function Transactions() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex p-1 bg-[#141928] rounded-xl border border-white/5 gap-1">
+                <div style={{ display: "flex", padding: "4px", backgroundColor: "#141928", borderRadius: "12px", gap: "4px", border: "1px solid rgba(255,255,255,0.05)" }}>
                   <button type="button" onClick={() => setForm({ ...form, type: "EXPENSE" })}
-                    className={`flex-1 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${form.type === "EXPENSE" ? "bg-red-500/80 text-white shadow-sm" : "text-gray-500 hover:text-gray-300"}`}>
+                    style={{ flex: 1, padding: "8px 0", fontSize: "13px", fontWeight: 500, borderRadius: "8px", border: "none", cursor: "pointer", transition: "all 0.2s",
+                      backgroundColor: form.type === "EXPENSE" ? "#ef4444" : "transparent",
+                      color: form.type === "EXPENSE" ? "#ffffff" : "#6b7280" }}>
                     Expense
                   </button>
                   <button type="button" onClick={() => setForm({ ...form, type: "INCOME" })}
-                    className={`flex-1 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${form.type === "INCOME" ? "bg-green-500/80 text-white shadow-sm" : "text-gray-500 hover:text-gray-300"}`}>
+                    style={{ flex: 1, padding: "8px 0", fontSize: "13px", fontWeight: 500, borderRadius: "8px", border: "none", cursor: "pointer", transition: "all 0.2s",
+                      backgroundColor: form.type === "INCOME" ? "#22c55e" : "transparent",
+                      color: form.type === "INCOME" ? "#ffffff" : "#6b7280" }}>
                     Income
                   </button>
                 </div>
