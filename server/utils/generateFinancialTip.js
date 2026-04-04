@@ -4,7 +4,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const generateFinancialTip = async (spendingData) => {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `Based on this monthly spending data, give ONE short, specific, actionable financial tip in 2-3 sentences. Be friendly and encouraging. Data: ${JSON.stringify(spendingData)}`;
 
