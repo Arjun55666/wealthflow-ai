@@ -7,11 +7,11 @@ import { COLORS, CATEGORY_LABELS, formatCurrency } from "../utils/constants";
 
 const StatCard = ({ icon: Icon, iconBg, iconColor, label, value, sub }) => (
   <div className="glass-card rounded-2xl p-5 group hover:border-white/12 transition-all duration-300">
-    <div className="flex items-start justify-between mb-4">
-      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
+    <div className="flex items-center gap-3 mb-3">
+      <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${iconBg}`}>
         <Icon size={16} className={iconColor} />
       </div>
-      <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-widest">{label}</span>
+      <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">{label}</span>
     </div>
     <p className="text-[22px] font-semibold text-white tracking-tight">{value}</p>
     <p className="text-[12px] text-gray-600 mt-1">{sub}</p>
@@ -156,7 +156,7 @@ export default function Dashboard() {
           </div>
           <div className="h-[240px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }} barCategoryGap="30%">
+              <BarChart data={monthlyData} margin={{ top: 4, right: 4, left: 4, bottom: 0 }} barCategoryGap="30%">
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
                 <XAxis
                   dataKey="month"
@@ -165,13 +165,7 @@ export default function Dashboard() {
                   tick={{ fill: '#4B5563', fontSize: 11 }}
                   dy={8}
                 />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: '#4B5563', fontSize: 11 }}
-                  tickFormatter={(val) => `₹${val / 1000}k`}
-                  width={48}
-                />
+                <YAxis hide />
                 <Tooltip
                   cursor={{ fill: 'rgba(255,255,255,0.02)' }}
                   contentStyle={{ backgroundColor: '#0E1220', borderColor: 'rgba(255,255,255,0.08)', borderRadius: '10px', color: '#fff', fontSize: '13px' }}

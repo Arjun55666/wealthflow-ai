@@ -122,7 +122,7 @@ export default function Reports() {
           </div>
           <div className="h-[260px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }} barCategoryGap="30%">
+              <BarChart data={monthlyData} margin={{ top: 4, right: 4, left: 4, bottom: 0 }} barCategoryGap="30%">
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
                 <XAxis
                   dataKey="month"
@@ -131,13 +131,7 @@ export default function Reports() {
                   tick={{ fill: '#4B5563', fontSize: 11 }}
                   dy={8}
                 />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: '#4B5563', fontSize: 11 }}
-                  tickFormatter={(val) => `₹${val / 1000}k`}
-                  width={48}
-                />
+                <YAxis hide />
                 <Tooltip
                   cursor={{ fill: 'rgba(255,255,255,0.02)' }}
                   contentStyle={{ backgroundColor: '#0E1220', borderColor: 'rgba(255,255,255,0.08)', borderRadius: '10px', color: '#fff', fontSize: '13px' }}
