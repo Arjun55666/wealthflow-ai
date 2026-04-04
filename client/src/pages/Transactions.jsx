@@ -252,12 +252,12 @@ export default function Transactions() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-[100]">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={() => setShowModal(false)} />
-          <div className="absolute inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-          <div className="relative bg-[#0E1220] border border-white/8 rounded-2xl w-full max-w-md shadow-[0_32px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 fade-in duration-200">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/5 sticky top-0 bg-[#0E1220] z-10">
+        <>
+          <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md" onClick={() => setShowModal(false)} />
+          <div className="fixed inset-0 z-[101] overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="bg-[#0E1220] border border-white/8 rounded-2xl w-full max-w-md shadow-[0_32px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 fade-in duration-200">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/5 bg-[#0E1220] rounded-t-2xl">
               <h2 className="text-[15px] font-semibold text-white">New Transaction</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5">
                 <X size={17} />
@@ -404,10 +404,10 @@ export default function Transactions() {
                 </div>
               </form>
             </div>
+              </div>
+            </div>
           </div>
-          </div>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
