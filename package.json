@@ -1,0 +1,8 @@
+{
+  "name": "wealthflow-ai",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm install --prefix server && ./server/node_modules/.bin/prisma generate --schema=server/prisma/schema.prisma && npm install --prefix client && npm run build --prefix client",
+    "start": "node server/app.js"
+  }
+}
