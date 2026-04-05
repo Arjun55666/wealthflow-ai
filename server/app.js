@@ -37,11 +37,13 @@ const receiptRoutes = require("./routes/receipt");
 const arcjetMiddleware = require("./middlewares/arcjet");
 const graphRoutes = require("./routes/graph");
 
+// Arcjet only protects API routes, not static files
+app.use("/api", arcjetMiddleware);
+
 app.use("/api/auth", userRoutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/receipts", receiptRoutes);
-app.use(arcjetMiddleware);
 app.use("/api/graph", graphRoutes);
 
 // Serve built React frontend
