@@ -17,7 +17,7 @@ const allowedOrigins = [
   /\.replit\.dev$/,
   "http://localhost:5000",
   "http://localhost:5173",
-];
+].filter(Boolean);
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
