@@ -2,16 +2,21 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
+const path = require("path");
 dotenv.config();
 
 const app = express();
 
 app.set("trust proxy", true);
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
+
 const allowedOrigins = [
   process.env.FRONTEND_DOMAIN,
   /\.vercel\.app$/,
+  /\.replit\.app$/,
+  /\.replit\.dev$/,
   "http://localhost:5000",
+  "http://localhost:5173",
 ];
 app.use(cors({
   origin: (origin, callback) => {
@@ -32,8 +37,6 @@ const receiptRoutes = require("./routes/receipt");
 const arcjetMiddleware = require("./middlewares/arcjet");
 const graphRoutes = require("./routes/graph");
 
-
-
 app.use("/api/auth", userRoutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/transactions", transactionRoutes);
@@ -41,8 +44,14 @@ app.use("/api/receipts", receiptRoutes);
 app.use(arcjetMiddleware);
 app.use("/api/graph", graphRoutes);
 
-app.get("/", (req, res) => {
-  res.json({ message: "WealthFlow AI API is running!" });
+// Serve built React frontend
+const clientDist = path.join(__dirname, "../client/dist");
+app.use(express.static(clientDist));
+
+// SPA fallback — all non-API routes serve index.html
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) return next();
+  res.sendFile(path.join(clientDist, "index.html"));
 });
 
 app.use((err, req, res, next) => {

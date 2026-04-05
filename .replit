@@ -40,3 +40,8 @@ externalPort = 80
 [[ports]]
 localPort = 5001
 externalPort = 3001
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["node", "server/app.js"]
+build = ["bash", "-c", "npm install --prefix server && npx prisma generate --schema=server/prisma/schema.prisma && cd client && npm install && npm run build"]
