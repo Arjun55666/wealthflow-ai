@@ -3,7 +3,7 @@ services:
     name: wealthflow-api
     runtime: node
     rootDir: server
-    buildCommand: npm install
+    buildCommand: npm install && npx prisma generate && npx prisma migrate deploy
     startCommand: node app.js
     envVars:
       - key: NODE_ENV
