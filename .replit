@@ -1,0 +1,45 @@
+modules = ["nodejs-20", "web"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+JWT_SECRET = "9fdb5caef0f42d8c781627fb25c1d69961f23adb6b2afc1cdcb4b0f23c91aed84d2b18004d37e94f3946e15d6b834b1d0ca46e1e3cfcad491f4877065bad7ee2"
+PORT = "5000"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node server/app.js"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["node", "server/app.js"]
+build = ["bash", "-c", "cd server && npm install && ./node_modules/.bin/prisma generate --schema=prisma/schema.prisma && ./node_modules/.bin/prisma db push --schema=prisma/schema.prisma --accept-data-loss && cd ../client && npm install && npm run build"]
