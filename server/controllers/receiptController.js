@@ -1,4 +1,4 @@
-const { parseReceipt } = require("../services/geminiService");
+const { parseReceipt } = require("../services/groqService");
 const fs = require("fs");
 
 const scanReceipt = async (req, res) => {
