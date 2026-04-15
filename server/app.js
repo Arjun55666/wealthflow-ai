@@ -48,11 +48,12 @@ app.use("/api/graph", graphRoutes);
 
 // Serve built React frontend
 const clientDist = path.join(__dirname, "../client/dist");
-app.use(express.static(clientDist));
+app.use(express.static(clientDist, { etag: false, maxAge: 0 }));
 
-// SPA fallback — all non-API routes serve index.html
+// SPA fallback — all non-API routes serve index.html (never cached)
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) return next();
+  res.setHeader("Cache-Control", "no-store");
   res.sendFile(path.join(clientDist, "index.html"));
 });
 
