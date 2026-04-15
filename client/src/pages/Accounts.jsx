@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Plus, Trash2, Wallet, Building2, Landmark, X } from "lucide-react";
 import API from "../utils/axios";
 import toast from "react-hot-toast";
@@ -175,11 +176,23 @@ export default function Accounts() {
         </div>
       )}
 
-      {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={() => setShowModal(false)} />
-
-          <div className="relative bg-[#0E1220] border border-white/8 rounded-2xl w-full max-w-md shadow-[0_32px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 fade-in duration-200">
+      {showModal && createPortal(
+        <div
+          onClick={() => setShowModal(false)}
+          style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            zIndex: 9999, overflowY: "auto",
+            backgroundColor: "rgba(0,0,0,0.75)",
+            backdropFilter: "blur(8px)",
+            display: "flex", alignItems: "flex-start", justifyContent: "center",
+            padding: "32px 16px",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "100%", maxWidth: "448px" }}
+            className="bg-[#0E1220] border border-white/8 rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
+          >
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
               <h2 className="text-[15px] font-semibold text-white">New Account</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5">
@@ -245,7 +258,8 @@ export default function Accounts() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
