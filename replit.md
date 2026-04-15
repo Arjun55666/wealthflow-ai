@@ -50,7 +50,7 @@ Required secrets:
 - `JWT_SECRET` - JWT signing secret
 
 Optional secrets:
-- `GEMINI_API_KEY` - For AI receipt scanning and financial tips
+- `GROQ_API_KEY` - For AI receipt scanning (Llama 4 Scout vision) and financial tips (Llama 3.3 70b)
 - `REDIS_URL` - Upstash Redis for caching (app works without it)
 - `ARCJET_KEY` - For rate limiting and shield protection (app works without it)
 - `EMAIL_USER` / `EMAIL_PASS` - For budget alert emails
