@@ -8,7 +8,7 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.shared]
-JWT_SECRET = "9fdb5caef0f42d8c781627fb25c1d69961f23adb6b2afc1cdcb4b0f23c91aed84d2b18004d37e94f3946e15d6b834b1d0ca46e1e3cfcad491f4877065bad7ee2"
+JWT_SECRET = "wealthflow_super_secret_key_2024"
 PORT = "5000"
 
 [workflows]
