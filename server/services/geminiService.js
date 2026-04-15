@@ -1,7 +1,7 @@
-const OpenAI = require("openai");
+const Groq = require("groq-sdk");
 const fs = require("fs");
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const parseReceipt = async (imagePath) => {
   try {
@@ -18,8 +18,8 @@ const parseReceipt = async (imagePath) => {
 }
 If you cannot find a value, use null. Return only valid JSON.`;
 
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await groq.chat.completions.create({
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
       messages: [
         {
           role: "user",
@@ -39,10 +39,10 @@ If you cannot find a value, use null. Return only valid JSON.`;
     const cleaned = text.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(cleaned);
 
-    console.log("Receipt parsed successfully using gpt-4o-mini");
+    console.log("Receipt parsed successfully using Groq llama-4-scout");
     return { success: true, data: parsed };
   } catch (error) {
-    console.error("OpenAI receipt parsing failed:", error.message?.slice(0, 200));
+    console.error("Groq receipt parsing failed:", error.message?.slice(0, 200));
     return { success: false, error: error.message };
   }
 };
