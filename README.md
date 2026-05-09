@@ -106,7 +106,7 @@ cd server && node app.js &
 cd client && npm run dev
 ```
 
-The frontend runs on `http://localhost:5173` and the backend on `http://localhost:5000`.
+The frontend runs on `http://localhost:5173` and the backend on `http://localhost:3000`.
 
 ---
 
