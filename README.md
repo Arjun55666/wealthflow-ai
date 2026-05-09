@@ -85,7 +85,7 @@ server/                  # Express backend
 
 ```bash
 # Clone the repo
-git clone https://github.com/555arjunmavi/wealthflow-ai
+git clone https://github.com/Arjun55666/wealthflow-ai
 cd wealthflow-ai
 
 # Install server dependencies
