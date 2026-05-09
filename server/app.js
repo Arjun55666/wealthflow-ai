@@ -62,13 +62,13 @@ app.get("/", (req, res) => {
   res.send("WealthFlow API running 🚀");
 });
 
-// Global error handler
+// Global error handler — never expose internal errors to clients in production
 app.use((err, req, res, next) => {
   console.error(err.message);
 
   res.status(500).json({
     message: "Something went wrong",
-    error: err.message,
+    ...(process.env.NODE_ENV !== "production" && { error: err.message }),
   });
 });
 

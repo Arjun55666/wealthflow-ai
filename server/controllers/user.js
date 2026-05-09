@@ -9,11 +9,12 @@ const register = async (req, res) => {
     if (!name || name.trim() === "") {
       return res.status(400).json({ message: "Name is required" })
     }
-    if (!email || !email.includes("@")) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
       return res.status(400).json({ message: "Valid email is required" })
     }
-    if (!password || password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" })
+    if (!password || password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters" })
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -46,7 +47,8 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !email.includes("@")) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
       return res.status(400).json({ message: "Valid email is required" })
     }
     if (!password) {

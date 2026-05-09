@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { TrendingUp, TrendingDown, Wallet, PiggyBank, Lightbulb, ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import API from "../utils/axios";
@@ -246,9 +247,9 @@ export default function Dashboard() {
       <div className="glass-card rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
           <h3 className="text-[14px] font-semibold text-gray-200">Recent Transactions</h3>
-          <a href="/transactions" className="text-[12px] text-primary hover:text-primary/75 transition-colors font-medium">
+          <Link to="/transactions" className="text-[12px] text-primary hover:text-primary/75 transition-colors font-medium">
             View all
-          </a>
+          </Link>
         </div>
 
         {recentTxns.length === 0 ? (

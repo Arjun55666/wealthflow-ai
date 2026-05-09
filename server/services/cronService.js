@@ -1,5 +1,6 @@
 const cron = require("node-cron");
 const prisma = require("../utils/prismaClient");
+const calculateNextDate = require("../utils/calculateNextDate");
 
 const processRecurringTransactions = async () => {
   try {
@@ -110,17 +111,6 @@ const generateMonthlyReports = async () => {
   } catch (error) {
     console.error("Monthly report cron error:", error.message);
   }
-};
-
-const calculateNextDate = (interval) => {
-  const date = new Date();
-  switch (interval) {
-    case "DAILY":   date.setDate(date.getDate() + 1); break;
-    case "WEEKLY":  date.setDate(date.getDate() + 7); break;
-    case "MONTHLY": date.setMonth(date.getMonth() + 1); break;
-    case "YEARLY":  date.setFullYear(date.getFullYear() + 1); break;
-  }
-  return date;
 };
 
 const startCronJobs = () => {

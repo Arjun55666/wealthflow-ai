@@ -1,6 +1,7 @@
 const prisma = require("../utils/prismaClient");
 const checkAndSendBudgetAlert = require("../utils/checkAndSendBudgetAlert");
 const redis = require("../utils/redisClient");
+const calculateNextDate = require("../utils/calculateNextDate");
 
 // Create Transaction (ACID - balance updates atomically)
 const createTransaction = async (req, res) => {
@@ -198,7 +199,7 @@ const deleteTransaction = async (req, res) => {
   }
 };
 
-// Get spending summary (for dashboard)
+// Get spending summary (for dashboard) — uses DB aggregation, not in-memory
 const getSummary = async (req, res) => {
   try {
     const { accountId, month, year } = req.query;
@@ -215,22 +216,30 @@ const getSummary = async (req, res) => {
     };
     if (accountId) where.accountId = accountId;
 
-    const transactions = await prisma.transaction.findMany({ where });
+    // Use DB aggregation instead of fetching all rows into memory
+    const [incomeAgg, expenseAgg, categoryAgg] = await Promise.all([
+      prisma.transaction.aggregate({
+        where: { ...where, type: "INCOME" },
+        _sum: { amount: true },
+      }),
+      prisma.transaction.aggregate({
+        where: { ...where, type: "EXPENSE" },
+        _sum: { amount: true },
+      }),
+      prisma.transaction.groupBy({
+        by: ["category"],
+        where: { ...where, type: "EXPENSE" },
+        _sum: { amount: true },
+      }),
+    ]);
 
-    const totalIncome = transactions
-      .filter((t) => t.type === "INCOME")
-      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
-
-    const totalExpense = transactions
-      .filter((t) => t.type === "EXPENSE")
-      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+    const totalIncome = parseFloat(incomeAgg._sum.amount || 0);
+    const totalExpense = parseFloat(expenseAgg._sum.amount || 0);
 
     const byCategory = {};
-    transactions
-      .filter((t) => t.type === "EXPENSE")
-      .forEach((t) => {
-        byCategory[t.category] = (byCategory[t.category] || 0) + parseFloat(t.amount);
-      });
+    categoryAgg.forEach((row) => {
+      byCategory[row.category] = parseFloat(row._sum.amount || 0);
+    });
 
     res.status(200).json({
       summary: {
@@ -245,18 +254,6 @@ const getSummary = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
-};
-
-// Helper — calculate next recurring date
-const calculateNextDate = (interval) => {
-  const date = new Date();
-  switch (interval) {
-    case "DAILY":   date.setDate(date.getDate() + 1); break;
-    case "WEEKLY":  date.setDate(date.getDate() + 7); break;
-    case "MONTHLY": date.setMonth(date.getMonth() + 1); break;
-    case "YEARLY":  date.setFullYear(date.getFullYear() + 1); break;
-  }
-  return date;
 };
 
 module.exports = {

@@ -7,7 +7,8 @@ const parseReceipt = async (imagePath) => {
   try {
     const imageData = fs.readFileSync(imagePath);
     const base64Image = imageData.toString("base64");
-    const mimeType = imagePath.endsWith(".png") ? "image/png" : "image/jpeg";
+    const ext = imagePath.split(".").pop().toLowerCase();
+    const mimeType = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : "image/jpeg";
 
     const prompt = `Analyze this receipt image and extract the following information in JSON format only, no extra text:
 {
