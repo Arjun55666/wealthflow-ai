@@ -29,7 +29,7 @@ const register = async (req, res) => {
 
     const token = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || process.env.SESSION_SECRET,
       { expiresIn: "7d" }
     );
 
@@ -67,7 +67,7 @@ const login = async (req, res) => {
 
     const token = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || process.env.SESSION_SECRET,
       { expiresIn: "7d" }
     );
 
