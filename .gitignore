@@ -1,23 +1,5 @@
-# Dependencies
-node_modules/
-
-# Environment variables
+node_modules
 .env
-.env.local
-*.env
-
-# Replit internal
-.local/
-.canvas/
-.agents/
-.cache/
-.config/
-.replit.nix
-
-# Logs
-*.log
-npm-debug.log*
-
-# OS
-.DS_Store
-Thumbs.db
+dist
+build
+uploads

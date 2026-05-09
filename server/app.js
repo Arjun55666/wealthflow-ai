@@ -13,25 +13,28 @@ app.set("trust proxy", true);
 // Security
 app.use(helmet({ contentSecurityPolicy: false }));
 
-// CORS 
+// CORS
 const allowedOrigins = [
-  process.env.FRONTEND_DOMAIN, // your Vercel URL
+  process.env.FRONTEND_DOMAIN,
   /\.vercel\.app$/,
-  "http://localhost:5173"
+  "http://localhost:5000",
+  "http://localhost:5173",
 ].filter(Boolean);
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
 
-    const allowed = allowedOrigins.some((o) =>
-      typeof o === "string" ? o === origin : o.test(origin)
-    );
+      const allowed = allowedOrigins.some((o) =>
+        typeof o === "string" ? o === origin : o.test(origin)
+      );
 
-    callback(allowed ? null : new Error("CORS not allowed"), allowed);
-  },
-  credentials: true,
-}));
+      callback(allowed ? null : new Error("CORS not allowed"), allowed);
+    },
+    credentials: true,
+  })
+);
 
 // Body parser
 app.use(express.json());
@@ -41,39 +44,40 @@ const userRoutes = require("./routes/user");
 const accountRoutes = require("./routes/account");
 const transactionRoutes = require("./routes/transaction");
 const receiptRoutes = require("./routes/receipt");
-const arcjetMiddleware = require("./middlewares/arcjet");
 const graphRoutes = require("./routes/graph");
+const arcjetMiddleware = require("./middlewares/arcjet");
 
 // Protect API routes
 app.use("/api", arcjetMiddleware);
 
+// API routes
 app.use("/api/auth", userRoutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/receipts", receiptRoutes);
 app.use("/api/graph", graphRoutes);
 
-// Health route (important)
+// Health route
 app.get("/", (req, res) => {
   res.send("WealthFlow API running 🚀");
 });
 
-//  Global error handler
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error(err.message);
+
   res.status(500).json({
     message: "Something went wrong",
-    error: err.message
+    error: err.message,
   });
 });
 
-//  Cron jobs (okay for now)
+// Cron jobs
 const { startCronJobs } = require("./services/cronService");
 startCronJobs();
 
-//  Port
+// Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
