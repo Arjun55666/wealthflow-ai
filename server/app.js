@@ -8,8 +8,8 @@ dotenv.config();
 
 const app = express();
 
-// Trust proxy (important for deployment platforms)
-app.set("trust proxy", true);
+// Trust one proxy hop (Render, Vercel, Replit — all sit behind one reverse proxy)
+app.set("trust proxy", 1);
 
 // Security
 app.use(helmet({ contentSecurityPolicy: false }));
