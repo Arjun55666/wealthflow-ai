@@ -18,6 +18,9 @@ app.use(helmet({ contentSecurityPolicy: false }));
 const allowedOrigins = [
   process.env.FRONTEND_DOMAIN,
   /\.vercel\.app$/,
+  /\.replit\.dev$/,
+  /\.pike\.replit\.dev$/,
+  "http://localhost:3000",
   "http://localhost:5000",
   "http://localhost:5173",
 ].filter(Boolean);
