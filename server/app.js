@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
+const path = require("path");
 
 dotenv.config();
 
@@ -57,9 +58,13 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/receipts", receiptRoutes);
 app.use("/api/graph", graphRoutes);
 
-// Health route
-app.get("/", (req, res) => {
-  res.send("WealthFlow API running 🚀");
+// Serve React frontend
+const clientDist = path.join(__dirname, "../client/dist");
+app.use(express.static(clientDist, { maxAge: "1d" }));
+
+// SPA catch-all — return index.html for any non-API route
+app.get("/{*splat}", (req, res) => {
+  res.sendFile(path.join(clientDist, "index.html"));
 });
 
 // Global error handler — never expose internal errors to clients in production
