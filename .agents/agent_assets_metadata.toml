@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "6lnOTwQyfKHgIxzff1js6"
+uri = "file://README.md"
+type = "text"
+title = "WealthFlow AI — README"
